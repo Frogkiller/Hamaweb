@@ -2,3 +2,5 @@ config.json
 db.sqlite3
 __pycache__/
 *.py[cod]
+media/orders_pics/
+orders/migrations/

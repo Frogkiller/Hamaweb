@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import Client, Hammock_variant, Order, Elements
 
-# Register your models here.
+admin.site.register(Client)
+admin.site.register(Hammock_variant)
+admin.site.register(Order)
+admin.site.register(Elements)
