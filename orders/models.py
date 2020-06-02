@@ -29,6 +29,7 @@ class Order(models.Model):
     material = models.CharField(max_length=50)
     variants = models.ManyToManyField(Hammock_variant, through='Elements')
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    number_of_elements = models.PositiveIntegerField()
 
     def __str__(self):
         return f'{self.title}'

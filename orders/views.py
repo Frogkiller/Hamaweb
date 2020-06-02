@@ -1,8 +1,14 @@
 from django.shortcuts import render
+from django.views.generic import (
+    ListView,
+)
+from .models import Order, Elements
 
-def home(request):
-    context = {
 
-    }
-    return render(request, 'orders/home.html', context)
+class OrdersListView(ListView):
+    model = Order
+    template_name = 'orders/home.html' # <app>/<model>_<viewtype>.html
+    context_object_name = 'orders'
+    ordering = ['-date_created']
+
 

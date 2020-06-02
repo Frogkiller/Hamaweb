@@ -1,4 +1,19 @@
 {% extends 'orders/base.html' %}
 {% block content %}
-    <h1>test</h1>
+    {% for order in orders %}
+    <article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ order.image.url }}">
+        <div class="media-body">
+            <div class="article-metadata">
+            <small class="text-muted">{{ order.date_created|date:"d F Y" }}</small>
+            </div>
+            <h2><a class="article-title" href="#">{{ order.title }}</a></h2>
+            <p class="article-content">{{ order.comment }}</p>
+            <p class="article-content">{{ order.sumaric_price }}</p>
+            <p class="article-content">{{ order.material }}</p>
+            <p class="article-content">{{ order.elements. }}</p>
+            <p class="article-content"><a href="#">{{ order.client.name }}</a></p>
+        </div>
+    </article>
+    {% endfor %}
 {% endblock content %}
