@@ -6,7 +6,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-from .models import Order, Elements, Hammock_variant
+from .models import Order, Elements, Hammock_variant, Client
 from .forms import VariantsCreateForm
 
 class OrdersListView(ListView):
@@ -35,7 +35,7 @@ class VariantsListView(ListView):
     context_object_name = 'variants'
 
     def post(self, request, *args, **kwargs):
-        form = VariantsCreateForm(self.request.POST)
+        form = VariantsCreateForm(self.request.POST or None)
         if form.is_valid():
             form.save()
             return redirect('variants-list')
@@ -54,3 +54,22 @@ class VariantsUpdateView(UpdateView):
     model = Hammock_variant
     success_url = '/variants'
     fields = ['name', 'price']
+
+class ClientsListView(ListView):
+    model = Client
+    context_object_name = 'clients'
+    ordering = ['-date_added']
+
+class ClientsDeleteView(DeleteView):
+    model = Client
+    success_url = '/clients'
+
+class ClientsUpdateView(UpdateView):
+    model = Client
+    success_url = '/clients'
+    fields = ['name', 'phone', 'inpost', 'comments']
+
+class ClientsCreateView(CreateView):
+    model = Client
+    success_url = '/clients'
+    fields = ['name', 'phone', 'inpost', 'comments']

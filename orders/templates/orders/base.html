@@ -27,11 +27,13 @@
                     <div class="navbar-nav mr-auto">
                     <a class="nav-item nav-link" href="{% url 'orders-home' %}">Orders</a>
                     <a class="nav-item nav-link" href="{% url 'variants-list' %}">Variants</a>
+                    <a class="nav-item nav-link" href="{% url 'clients-list' %}">Clients</a>
                     {% comment %} <a class="nav-item nav-link" href="{% url 'blog-about' %}">About</a> {% endcomment %}
                     </div>
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
                     <a class="nav-item nav-link" href="{% url 'orders-create' %}">New Order</a>
+                    <a class="nav-item nav-link" href="{% url 'clients-create' %}">New Client</a>
                     {% comment %} {% if user.is_authenticated %}
                     <a class="nav-item nav-link" href="{% url 'post-create' %}">New Post</a>
                     <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>

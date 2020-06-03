@@ -1,0 +1,23 @@
+{% extends 'orders/base.html' %}
+{% block content %}
+    {% for client in clients %}
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata row">
+            <div class="col-sm float-left">
+            <small class="text-muted">{{ client.date_added|date:"d F Y" }}</small>
+            </div>
+            <div class="float-right">
+            <a class="btn btn-secondary btn-sm align-self-end mr-2 mb-2" href="{% url 'clients-update' client.id %}">Update</a>
+            <a class="btn btn-danger btn-sm align-self-end mr-2 mb-2" href="{% url 'clients-delete' client.id %}">Delete</a>
+            </div>
+            </div>
+            <h2 class="article-title">{{ client.name }}</h2>
+            <p class="article-content">Phone: {{ client.phone }}</p>
+            <p class="article-content">Inpost: {{ client.inpost }}</p>
+            <p class="article-content">comments: {{ client.comments }}</p>
+
+        </div>
+    </article>
+    {% endfor %}
+{% endblock content %}

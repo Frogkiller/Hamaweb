@@ -16,9 +16,11 @@ class Client(models.Model):
     phone = models.CharField(max_length=12, blank=True, default='')
     inpost = models.CharField(max_length=100, blank=True, default='')
     comments = models.TextField(blank=True, default='')
+    date_added = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f'{self.name}'
+
 
 class Order(models.Model):
     title = models.CharField(max_length=100)
@@ -45,7 +47,8 @@ class Order(models.Model):
             img.save(self.image.path)
 
     def get_absolute_url(self):
-        return reverse("orders-detail", kwargs={"pk": self.pk})    
+        return reverse("orders-detail", kwargs={"pk": self.pk})   
+
 
 class Elements(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
