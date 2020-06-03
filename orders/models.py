@@ -51,7 +51,7 @@ class Order(models.Model):
 
 
 class Elements(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True)
     variant = models.ForeignKey(Hammock_variant, on_delete=models.CASCADE)
     count = models.PositiveIntegerField(default=1)
     price_override = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0)
