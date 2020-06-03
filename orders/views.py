@@ -22,7 +22,7 @@ class OrdersListView(ListView):
 class OrdersCreateView(CreateView):
     model = Order
     fields = ['title', 'material', 'client', 'comment', 'postal', 'image']
-    new_f = []
+    # new_f = []
     
     def get_context_data(self, **kwargs):
         context = super(OrdersCreateView, self).get_context_data(**kwargs)
@@ -70,7 +70,29 @@ class OrdersDeleteView(DeleteView):
 
 class OrdersUpdateView(UpdateView):
     model = Order
-    fields = ['title', 'material', 'client', 'comment', 'postal', 'image', 'variants' ]
+    fields = ['title', 'material', 'client', 'comment', 'postal', 'image']
+
+    def get_context_data(self, **kwargs):
+        context = super(OrdersUpdateView, self).get_context_data(**kwargs)
+        ElementsInlineFormSet = inlineformset_factory(Order, Elements, fields=('variant', 'count', 'price_override'), extra=0)
+        if self.request.POST:
+            context['formset'] = ElementsInlineFormSet(self.request.POST, instance=self.get_object())
+        else:
+            context['formset'] = ElementsInlineFormSet(instance=self.get_object())
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        f2 = context['formset']
+        if f2.is_valid():
+            self.object = form.save()
+            f2.instance = self.object
+            f2.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
+
 
 class VariantsListView(ListView):
     model = Hammock_variant
