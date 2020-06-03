@@ -5,6 +5,9 @@ from .views import (
     OrdersDetailView,
     OrdersDeleteView,
     OrdersUpdateView,
+    VariantsListView,
+    VariantsUpdateView,
+    VariantsDeleteView,
 )
 
 urlpatterns = [
@@ -14,4 +17,7 @@ urlpatterns = [
     path('order/update/<int:pk>', OrdersUpdateView.as_view(), name='orders-update'),
     path('order/delete/<int:pk>', OrdersDeleteView.as_view(), name='orders-delete'),
     path('order/<int:pk>', OrdersDetailView.as_view(), name='orders-detail'),
+    path('variants/', VariantsListView.as_view(), name='variants-list'),
+    path('variants/update/<int:pk>', VariantsUpdateView.as_view(), name='variants-update'),
+    path('variants/delete/<int:pk>', VariantsDeleteView.as_view(), name='variants-delete'),
 ]

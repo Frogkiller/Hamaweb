@@ -1,0 +1,40 @@
+{% extends 'orders/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Update</th>
+            <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for variant in variants %}
+            <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ variant.name }}</td>
+            <td>{{ variant.price }}</td>
+            <td><a class="btn btn-secondary btn-sm" href="{% url 'variants-update' variant.id %}">Update</a></td>
+            <td><a class="btn btn-danger btn-sm" href="{% url 'variants-delete' variant.id %}">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Hammock Variant</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Send</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
