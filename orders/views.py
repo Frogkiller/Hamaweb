@@ -55,6 +55,8 @@ class OrdersCreateView(CreateView):
         f2 = context['formset']
         if f2.is_valid():
             self.object = form.save()
+            self.object.number_of_elements = [x.has_changed() for x in f2].count(True)
+            self.object.save()
             f2.instance = self.object
             f2.save()
             return HttpResponseRedirect(self.get_success_url())
@@ -74,7 +76,7 @@ class OrdersUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(OrdersUpdateView, self).get_context_data(**kwargs)
-        ElementsInlineFormSet = inlineformset_factory(Order, Elements, fields=('variant', 'count', 'price_override'), extra=0)
+        ElementsInlineFormSet = inlineformset_factory(Order, Elements, fields=('variant', 'count', 'price_override'), extra=1)
         if self.request.POST:
             context['formset'] = ElementsInlineFormSet(self.request.POST, instance=self.get_object())
         else:
