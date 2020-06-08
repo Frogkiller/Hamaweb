@@ -5,13 +5,23 @@ from django.views.generic import (
     CreateView,
     DetailView,
     UpdateView,
-    DeleteView
+    DeleteView,
+    FormView
 )
 from .models import Order, Elements, Hammock_variant, Client
-from .forms import VariantsCreateForm, ElementForm
+from .forms import VariantsCreateForm, ElementForm, NewOrderForm
 import logging
 
 logger = logging.getLogger(__name__)
+
+class NewOrderFormView(FormView):
+    template_name = 'orders/order_new.html'
+    form_class = NewOrderForm
+    def get_success_url(self):
+        form = self.form_class(self.request.POST or None)
+        if form.is_valid():
+            return reverse('orders-create-get', kwargs={'elements_count': form.data['elements_count']})
+        return reverse('order-create')
 
 class OrdersListView(ListView):
     model = Order
@@ -26,8 +36,8 @@ class OrdersCreateView(CreateView):
     
     def get_context_data(self, **kwargs):
         context = super(OrdersCreateView, self).get_context_data(**kwargs)
-        if self.kwargs.get('magic'):
-            value = self.kwargs.get('magic')
+        if self.kwargs.get('elements_count'):
+            value = self.kwargs.get('elements_count')
         else:
             value = 0
         ElementsInlineFormSet = inlineformset_factory(Order, Elements, fields=('variant', 'count', 'price_override'), extra=value)
@@ -36,28 +46,18 @@ class OrdersCreateView(CreateView):
             context['formset'] = ElementsInlineFormSet(self.request.POST)
         else:
             context['formset'] = ElementsInlineFormSet()
-        # pk = self.kwargs.get('magic')
-        # if pk:
-        #     ham = get_object_or_404(Hammock_variant, id=pk)
-        #     ele = Elements(variant=ham, price_override=ham.price)
-        #     form = ElementForm(instance=ele)
-        #     self.new_f.append(form)
-        #     context['cur_var'] = self.new_f
-        # else:
-        #     self.new_f = []
         return context
-    # def post(self, request, *args, **kwargs):
-
-    #     return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         context = self.get_context_data()
         f2 = context['formset']
         if f2.is_valid():
-            self.object = form.save()
-            self.object.number_of_elements = [x.has_changed() for x in f2].count(True)
+            self.object = form.save(commit=False)
+            self.object.number_of_elements = sum([int(x['count'].value()) for x in f2 if x['variant'].value() != ''])
+            self.object.sumaric_price = sum([float(x['price_override'].value())*float(x['count'].value()) for x in f2]) + (10 if self.object.postal else 0)
             self.object.save()
             f2.instance = self.object
+            import pdb; pdb.set_trace()
             f2.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
@@ -87,7 +87,10 @@ class OrdersUpdateView(UpdateView):
         context = self.get_context_data()
         f2 = context['formset']
         if f2.is_valid():
-            self.object = form.save()
+            self.object = form.save(commit=False)
+            self.object.number_of_elements = sum([int(x['count'].value()) for x in f2 if x['variant'].value() != ''])
+            self.object.sumaric_price = sum([float(x['price_override'].value())*float(x['count'].value()) for x in f2]) + (10 if self.object.postal else 0) 
+            self.object.save()
             f2.instance = self.object
             f2.save()
             return HttpResponseRedirect(self.get_success_url())
