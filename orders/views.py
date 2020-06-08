@@ -9,7 +9,7 @@ from django.views.generic import (
     FormView
 )
 from .models import Order, Elements, Hammock_variant, Client
-from .forms import VariantsCreateForm, ElementForm, NewOrderForm
+from .forms import VariantsCreateForm, NewOrderForm
 import logging
 
 logger = logging.getLogger(__name__)

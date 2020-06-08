@@ -7,15 +7,6 @@ class VariantsCreateForm(forms.ModelForm):
         fields = ['name', 'price']
 
 
-class ElementForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-       super(ElementForm, self).__init__(*args, **kwargs) 
-
-    class Meta:         
-        model = Elements
-        fields = ['variant', 'count', 'price_override']
-
-
 class OrdersCreateForm(forms.ModelForm):
     class Meta:         
         model = Order
