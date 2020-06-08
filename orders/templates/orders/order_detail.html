@@ -17,6 +17,26 @@
             <p class="article-content">Postal: {{ object.postal }}</p>
             <p class="article-content">Sum: {{ object.sumaric_price }}</p>
             <p class="article-content">Comment: {{ object.comment }}</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Count</th>
+                        <th scope="col">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for vari in variants %}
+                    <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ vari.variant }}</td>
+                    <td>{{ vari.count }}</td>
+                    <td>{{ vari.price_override }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            <table>
         </div>
     </article>
 {% endblock content %}
