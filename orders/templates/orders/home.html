@@ -2,10 +2,10 @@
 {% block content %}
     {% for order in orders %}
     <article class="media content-section">
-    <img class="rounded-circle article-img" src="{{ order.image.url }}">
+        <img class="rounded-circle article-img" src="{{ order.image.url }}">
         <div class="media-body">
             <div class="article-metadata">
-            <small class="text-muted">{{ order.date_created|date:"d F Y" }}</small>
+                <small class="text-muted">{{ order.date_created|date:"d F Y" }}</small>
             </div>
             <h2><a class="article-title" href="{% url 'orders-detail' order.id %}">{{ order.title }}</a></h2>
             <p class="article-content">Comment: {{ order.comment }}</p>
