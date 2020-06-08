@@ -14,7 +14,7 @@
                     {% for f in formset %}
                         {% if forloop.first %}
                             {% for field in f.visible_fields %}
-                                <th>{{ field.label_tag }}</th>
+                                <th scope="col">{{ field.label_tag }}</th>
                             {% endfor %}
                         </thead>
                         <tbody>
