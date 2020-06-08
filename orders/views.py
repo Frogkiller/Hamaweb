@@ -11,6 +11,7 @@ from django.views.generic import (
 from .models import Order, Elements, Hammock_variant, Client
 from .forms import VariantsCreateForm, NewOrderForm
 import logging
+from decimal import Decimal
 
 logger = logging.getLogger(__name__)
 
@@ -54,10 +55,16 @@ class OrdersCreateView(CreateView):
         if f2.is_valid():
             self.object = form.save(commit=False)
             self.object.number_of_elements = sum([int(x['count'].value()) for x in f2 if x['variant'].value() != ''])
-            self.object.sumaric_price = sum([float(x['price_override'].value())*float(x['count'].value()) for x in f2]) + (10 if self.object.postal else 0)
-            self.object.save()
+            
+            
             f2.instance = self.object
-            f2.save()
+            formset = f2.save(commit=False)
+            for f in formset:
+                if f.price_override == Decimal(0):
+                    f.price_override = f.variant.price
+            self.object.sumaric_price = sum([x.price_override*x.count for x in formset]) + (10 if self.object.postal else 0)
+            self.object.save()
+            for f in formset: f.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
             return self.render_to_response(self.get_context_data(form=form))
