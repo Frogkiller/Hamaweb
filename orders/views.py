@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 class NewOrderFormView(FormView):
     template_name = 'orders/order_new.html'
     form_class = NewOrderForm
+
     def get_success_url(self):
         form = self.form_class(self.request.POST or None)
         if form.is_valid():
@@ -32,7 +33,6 @@ class OrdersListView(ListView):
 class OrdersCreateView(CreateView):
     model = Order
     fields = ['title', 'material', 'client', 'comment', 'postal', 'image']
-    # new_f = []
     
     def get_context_data(self, **kwargs):
         context = super(OrdersCreateView, self).get_context_data(**kwargs)
@@ -64,6 +64,12 @@ class OrdersCreateView(CreateView):
 
 class OrdersDetailView(DetailView):
     model = Order
+
+    def get_context_data(self, **kwargs):
+        context = super(OrdersDetailView, self).get_context_data(**kwargs)
+        context['variants'] = Elements.objects.filter(order=self.object).all()
+        return context
+
 
 class OrdersDeleteView(DeleteView):
     model = Order

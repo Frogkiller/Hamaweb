@@ -7,10 +7,25 @@
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Order</legend>
                 {{ form|crispy }}
+                
+                <table class="table mt-4">
                 {{ formset.management_form }}
-                {% for f in formset %}
-                    {{ f|crispy }}
-                {% endfor %}
+                    <thead>
+                    {% for f in formset %}
+                        {% if forloop.first %}
+                            {% for field in f.visible_fields %}
+                                <th>{{ field.label_tag }}</th>
+                            {% endfor %}
+                        </thead>
+                        <tbody>
+                        {% endif %}
+                        <tr>
+                        {% for field in f.visible_fields %}<td>{{ field }}</td>{% endfor %}
+                        {{f.id}}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Send</button>
