@@ -57,7 +57,6 @@ class OrdersCreateView(CreateView):
             self.object.sumaric_price = sum([float(x['price_override'].value())*float(x['count'].value()) for x in f2]) + (10 if self.object.postal else 0)
             self.object.save()
             f2.instance = self.object
-            import pdb; pdb.set_trace()
             f2.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
