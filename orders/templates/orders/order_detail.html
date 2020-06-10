@@ -6,6 +6,9 @@
             <div class="article-metadata">
                 <small class="text-muted">{{ object.date_created|date:"d F Y" }}</small>
                 <div>
+                    {% if isnt_completed %}
+                        <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'orders-complete' object.id %}">Complete</a>
+                    {% endif %}
                     <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'orders-update' object.id %}">Update</a>
                     <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'orders-delete' object.id %}">Delete</a>
                 </div>
@@ -14,6 +17,7 @@
             <p class="article-content">Client: <a href="#">{{ object.client.name }}</a></p>
             <p class="article-content">Material: {{ object.material }}</p>
             <p class="article-content">Num. elements: {{ object.number_of_elements }}</p>
+            <p class="article-content">Complete date: {{ object.complete_date|date:"d F Y" }}</p>
             <p class="article-content">Postal: {{ object.postal }}</p>
             <p class="article-content">Sum: {{ object.sumaric_price }}</p>
             <p class="article-content">Comment: {{ object.comment }}</p>

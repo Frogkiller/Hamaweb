@@ -33,6 +33,7 @@ class Order(models.Model):
     variants = models.ManyToManyField(Hammock_variant, through='Elements', blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, blank=True, null=True)
     number_of_elements = models.PositiveIntegerField(blank=True, default=0)
+    complete_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.title}'
@@ -55,6 +56,12 @@ class Elements(models.Model):
     variant = models.ForeignKey(Hammock_variant, on_delete=models.CASCADE)
     count = models.PositiveIntegerField(default=1)
     price_override = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0)
+
+class Bilance(models.Model):
+    value = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    date = models.DateTimeField()
+    transaction_type = models.BooleanField()
+    
 
 
 
