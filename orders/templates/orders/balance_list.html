@@ -1,0 +1,51 @@
+{% extends 'orders/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Balance : 
+                {% if sum > 0 %}
+                    <span class="text-success">{{ sum }}</span>
+                {% else %}
+                    <span class="text-danger">{{ sum }}</span>
+                {% endif %}
+                </legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Add</button>
+            </div>
+        </form>
+    </div> 
+    <div class="content-section">
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Value</th>
+            <th scope="col">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bal in balances %}
+            <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ bal.title }}</td>
+            <td>
+            {% if bal.expense == True %}
+            <p class="text-danger">- {{ bal.value }}</p>
+            {% else %}
+            <p class="text-success">{{ bal.value }}</p>
+            {% endif %}
+            </td>
+            <td>{{ bal.date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+{% endblock content %}

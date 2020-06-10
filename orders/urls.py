@@ -13,7 +13,8 @@ from .views import (
     ClientsDeleteView,
     ClientsCreateView,
     NewOrderFormView,
-    OrdersComplete,
+    orders_complete,
+    BalanceListView,
 )
 
 urlpatterns = [
@@ -23,7 +24,7 @@ urlpatterns = [
     path('order/<int:pk>', OrdersDetailView.as_view(), name='orders-detail'),
     path('order/update/<int:pk>', OrdersUpdateView.as_view(), name='orders-update'),
     path('order/delete/<int:pk>', OrdersDeleteView.as_view(), name='orders-delete'),
-    path('order/complete/<int:pk>', OrdersComplete, name='orders-complete'),
+    path('order/complete/<int:pk>', orders_complete, name='orders-complete'),
     path('order/<int:pk>', OrdersDetailView.as_view(), name='orders-detail'),
     path('variants/', VariantsListView.as_view(), name='variants-list'),
     path('variants/update/<int:pk>', VariantsUpdateView.as_view(), name='variants-update'),
@@ -32,4 +33,5 @@ urlpatterns = [
     path('clients/new', ClientsCreateView.as_view(), name='clients-create'),
     path('clients/update/<int:pk>', ClientsUpdateView.as_view(), name='clients-update'),
     path('clients/<int:pk>', ClientsDeleteView.as_view(), name='clients-delete'),
+    path('balance/', BalanceListView.as_view(), name='balance-list'),
 ]

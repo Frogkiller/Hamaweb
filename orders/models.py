@@ -57,11 +57,12 @@ class Elements(models.Model):
     count = models.PositiveIntegerField(default=1)
     price_override = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0)
 
-class Bilance(models.Model):
+class Balance(models.Model):
+    title = models.CharField(max_length=100)
     value = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    date = models.DateTimeField()
-    transaction_type = models.BooleanField()
-    
+    date = models.DateTimeField(default=timezone.now)
+    expense = models.BooleanField()
+
 
 
 

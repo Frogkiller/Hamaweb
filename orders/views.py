@@ -10,8 +10,8 @@ from django.views.generic import (
     DeleteView,
     FormView
 )
-from .models import Order, Elements, Hammock_variant, Client
-from .forms import VariantsCreateForm, NewOrderForm
+from .models import Order, Elements, Hammock_variant, Client, Balance
+from .forms import VariantsCreateForm, NewOrderForm, BalanceCreateForm
 import logging
 from decimal import Decimal
 
@@ -109,7 +109,7 @@ class OrdersUpdateView(UpdateView):
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
-def OrdersComplete(request, pk):
+def orders_complete(request, pk):
     obj = get_object_or_404(Order, pk=pk)
     obj.complete_date = timezone.now()
     obj.save()
@@ -120,6 +120,7 @@ def OrdersComplete(request, pk):
 class VariantsListView(ListView):
     model = Hammock_variant
     context_object_name = 'variants'
+    ordering = ['name']
 
     def post(self, request, *args, **kwargs):
         form = VariantsCreateForm(self.request.POST or None)
@@ -160,3 +161,24 @@ class ClientsCreateView(CreateView):
     model = Client
     success_url = '/clients'
     fields = ['name', 'phone', 'inpost', 'comments']
+
+class BalanceListView(ListView):
+    model = Balance
+    ordering = ['-date']
+    context_object_name = 'balances'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = BalanceCreateForm()
+        context['sum'] = 0 #TODO: provide real value
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = BalanceCreateForm(self.request.POST or None)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.value = Decimal(form['count'].value()) * Decimal(form['price'].value())
+            obj.expense = True
+            obj.save()
+            return redirect('balance-list')
+        return self.get(request, *args, **kwargs)
