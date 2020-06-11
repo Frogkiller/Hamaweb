@@ -33,6 +33,7 @@ class Order(models.Model):
     variants = models.ManyToManyField(Hammock_variant, through='Elements', blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, blank=True, null=True)
     number_of_elements = models.PositiveIntegerField(blank=True, default=0)
+    complete_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.title}'
@@ -49,12 +50,23 @@ class Order(models.Model):
     def get_absolute_url(self):
         return reverse("orders-detail", kwargs={"pk": self.pk})   
 
+    def check_complete(self):
+        return True if self.complete_date is None else False
+
+    complete = property(check_complete)
+
 
 class Elements(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     variant = models.ForeignKey(Hammock_variant, on_delete=models.CASCADE)
     count = models.PositiveIntegerField(default=1)
     price_override = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0)
+
+class Balance(models.Model):
+    title = models.CharField(max_length=100)
+    value = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    date = models.DateTimeField(default=timezone.now)
+
 
 
 

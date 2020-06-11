@@ -7,7 +7,13 @@
             <div class="article-metadata">
                 <small class="text-muted">{{ order.date_created|date:"d F Y" }}</small>
             </div>
-            <h2><a class="article-title" href="{% url 'orders-detail' order.id %}">{{ order.title }}</a></h2>
+            <h2>
+            {% if order.complete %}
+            <a class="article-title text-danger" href="{% url 'orders-detail' order.id %}">{{ order.title }}</a>
+            {% else %}
+            <a class="article-title" href="{% url 'orders-detail' order.id %}">{{ order.title }}</a>
+            {% endif %}
+            </h2>
             <p class="article-content">Comment: {{ order.comment }}</p>
             <p class="article-content">Sum: {{ order.sumaric_price }}</p>
             <p class="article-content">Material: {{ order.material }}</p>

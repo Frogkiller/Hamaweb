@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect, reverse
 from django.forms import inlineformset_factory
+from django.utils import timezone
+from django.contrib import messages
 from django.views.generic import (
     ListView,
     CreateView,
@@ -8,8 +10,8 @@ from django.views.generic import (
     DeleteView,
     FormView
 )
-from .models import Order, Elements, Hammock_variant, Client
-from .forms import VariantsCreateForm, NewOrderForm
+from .models import Order, Elements, Hammock_variant, Client, Balance
+from .forms import VariantsCreateForm, NewOrderForm, BalanceCreateForm
 import logging
 from decimal import Decimal
 
@@ -55,8 +57,6 @@ class OrdersCreateView(CreateView):
         if f2.is_valid():
             self.object = form.save(commit=False)
             self.object.number_of_elements = sum([int(x['count'].value()) for x in f2 if x['variant'].value() != ''])
-            
-            
             f2.instance = self.object
             formset = f2.save(commit=False)
             for f in formset:
@@ -75,8 +75,8 @@ class OrdersDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(OrdersDetailView, self).get_context_data(**kwargs)
         context['variants'] = Elements.objects.filter(order=self.object).all()
+        context['isnt_completed'] = True if self.object.complete_date is None else False
         return context
-
 
 class OrdersDeleteView(DeleteView):
     model = Order
@@ -109,11 +109,20 @@ class OrdersUpdateView(UpdateView):
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
+def orders_complete(request, pk):
+    obj = get_object_or_404(Order, pk=pk)
+    obj.complete_date = timezone.now()
+    obj.save()
+    val = (obj.sumaric_price - 10 if obj.postal else obj.sumaric_price)
+    bal = Balance.objects.create(title=obj.title, value=val)
+    messages.success(request, f'This order has been completed')
+    return redirect('orders-detail', pk=pk)
 
 
 class VariantsListView(ListView):
     model = Hammock_variant
     context_object_name = 'variants'
+    ordering = ['name']
 
     def post(self, request, *args, **kwargs):
         form = VariantsCreateForm(self.request.POST or None)
@@ -154,3 +163,28 @@ class ClientsCreateView(CreateView):
     model = Client
     success_url = '/clients'
     fields = ['name', 'phone', 'inpost', 'comments']
+
+class BalanceListView(ListView):
+    model = Balance
+    ordering = ['-date']
+    context_object_name = 'balances'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = BalanceCreateForm()
+        context['sum'] = sum([x.value for x in Balance.objects.all()])
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = BalanceCreateForm(self.request.POST or None)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.value = 0-Decimal(form['count'].value()) * Decimal(form['price'].value())
+            obj.expense = True
+            obj.save()
+            return redirect('balance-list')
+        return self.get(request, *args, **kwargs)
+
+class BalanceDeleteView(DeleteView):
+    model = Balance
+    success_url = '/balance'
