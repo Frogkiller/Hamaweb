@@ -15,6 +15,7 @@ from .views import (
     NewOrderFormView,
     orders_complete,
     BalanceListView,
+    BalanceDeleteView,
 )
 
 urlpatterns = [
@@ -34,4 +35,5 @@ urlpatterns = [
     path('clients/update/<int:pk>', ClientsUpdateView.as_view(), name='clients-update'),
     path('clients/<int:pk>', ClientsDeleteView.as_view(), name='clients-delete'),
     path('balance/', BalanceListView.as_view(), name='balance-list'),
+    path('balance/delete/<int:pk>', BalanceDeleteView.as_view(), name='balance-delete'),
 ]

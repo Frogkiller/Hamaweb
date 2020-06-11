@@ -113,6 +113,8 @@ def orders_complete(request, pk):
     obj = get_object_or_404(Order, pk=pk)
     obj.complete_date = timezone.now()
     obj.save()
+    val = (obj.sumaric_price - 10 if obj.postal else obj.sumaric_price)
+    bal = Balance.objects.create(title=obj.title, value=val)
     messages.success(request, f'This order has been completed')
     return redirect('orders-detail', pk=pk)
 
@@ -170,15 +172,19 @@ class BalanceListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = BalanceCreateForm()
-        context['sum'] = 0 #TODO: provide real value
+        context['sum'] = sum([x.value for x in Balance.objects.all()])
         return context
 
     def post(self, request, *args, **kwargs):
         form = BalanceCreateForm(self.request.POST or None)
         if form.is_valid():
             obj = form.save(commit=False)
-            obj.value = Decimal(form['count'].value()) * Decimal(form['price'].value())
+            obj.value = 0-Decimal(form['count'].value()) * Decimal(form['price'].value())
             obj.expense = True
             obj.save()
             return redirect('balance-list')
         return self.get(request, *args, **kwargs)
+
+class BalanceDeleteView(DeleteView):
+    model = Balance
+    success_url = '/balance'

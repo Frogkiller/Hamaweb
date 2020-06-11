@@ -27,6 +27,7 @@
             <th scope="col">Name</th>
             <th scope="col">Value</th>
             <th scope="col">Date</th>
+            <th scope="col">Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -35,13 +36,15 @@
             <th scope="row">{{ forloop.counter }}</th>
             <td>{{ bal.title }}</td>
             <td>
-            {% if bal.expense == True %}
-            <p class="text-danger">- {{ bal.value }}</p>
+            {% if bal.value < 0 %}
+                <p class="text-danger">
             {% else %}
-            <p class="text-success">{{ bal.value }}</p>
+                <p class="text-success">
             {% endif %}
+                {{ bal.value }}</p>
             </td>
             <td>{{ bal.date }}</td>
+            <td><a class="btn btn-danger btn-sm" href="{% url 'balance-delete' bal.id %}">Delete</a></td>
             </tr>
             {% endfor %}
         </tbody>

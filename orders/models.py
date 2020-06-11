@@ -50,6 +50,11 @@ class Order(models.Model):
     def get_absolute_url(self):
         return reverse("orders-detail", kwargs={"pk": self.pk})   
 
+    def check_complete(self):
+        return True if self.complete_date is None else False
+
+    complete = property(check_complete)
+
 
 class Elements(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -61,7 +66,6 @@ class Balance(models.Model):
     title = models.CharField(max_length=100)
     value = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     date = models.DateTimeField(default=timezone.now)
-    expense = models.BooleanField()
 
 
 
